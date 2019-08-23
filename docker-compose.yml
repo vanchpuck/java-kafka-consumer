@@ -1,0 +1,18 @@
+version: '2'
+services:
+  gatling-runner:
+    # TODO should be parametrized
+    image: 848625190772.dkr.ecr.us-east-2.amazonaws.com/distr-docke-flxqu317r5k1:latest
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 65535
+        hard: 65535
+    logging:
+      driver: awslogs
+      options:
+        awslogs-create-group: true
+        awslogs-group: /ecs/gatling-runner
+        # TODO should be parametrized
+        awslogs-region: us-east-2
+        awslogs-stream-prefix: kafka-consumer
