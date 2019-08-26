@@ -43,7 +43,7 @@ public class App {
                     Long consumeEpoch = utcClock.millis();
                     Long delay = consumeEpoch - produceEpoch;
                     sum+=delay;
-                    LOG.info(String.format("New record consumed. Key = %s, counter value = %d, delay = %d", record.key(), actualCounterValue, delay));
+//                    LOG.info(String.format("New record consumed. Key = %s, counter value = %d, delay = %d", record.key(), actualCounterValue, delay));
                     if (actualCounterValue > expectedCounterValue) {
                         LOG.warn(String.format(
                                 "Missing value spotted. Expected counter value = %d, actual counter value = %d", expectedCounterValue, actualCounterValue));
@@ -59,7 +59,7 @@ public class App {
             }
             if (received != 0) {
                 double meanDelay = sum / received;
-                LOG.info("Mean delay: " + meanDelay);
+                LOG.info("Mean delay in milliseconds: " + meanDelay);
             }
 
         }
