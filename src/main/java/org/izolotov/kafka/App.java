@@ -22,17 +22,19 @@ public class App {
         Map<String, Long> keyCounts = new HashMap<>();
         Properties props = new Properties();
         props.put("bootstrap.servers", "localhost:9092");
-        props.put("security.protocol", "SSL");
-        props.put("ssl.truststore.location", "kafka.client.truststore.jks");
+//        props.put("security.protocol", "SSL");
+//        props.put("ssl.truststore.location", "kafka.client.truststore.jks");
         props.put("group.id", "demo-group");
         props.put("key.deserializer",
                 "org.apache.kafka.common.serialization.StringDeserializer");
         props.put("value.deserializer",
                 "org.apache.kafka.common.serialization.ByteArrayDeserializer");
         KafkaConsumer<String, byte[]> consumer = new KafkaConsumer<>(props);
-        consumer.subscribe(Arrays.asList("test1"));
+        consumer.subscribe(Arrays.asList("test"));
         while (true) {
             ConsumerRecords<String, byte[]> records = consumer.poll(1000);
+            int sum = 0;
+            int received = 0;
             for (ConsumerRecord<String, byte[]> record : records) {
                 try {
                     Long expectedCounterValue = keyCounts.getOrDefault(record.key(), 0L);
@@ -40,7 +42,8 @@ public class App {
                     Long produceEpoch = Longs.fromByteArray(Arrays.copyOfRange(record.value(), 8, 16));
                     Long consumeEpoch = utcClock.millis();
                     Long delay = consumeEpoch - produceEpoch;
-                    LOG.warn(String.format("New record consumed. Key = %s, counter value = %d, delay = %d", record.key(), actualCounterValue, delay));
+                    sum+=delay;
+                    LOG.info(String.format("New record consumed. Key = %s, counter value = %d, delay = %d", record.key(), actualCounterValue, delay));
                     if (actualCounterValue > expectedCounterValue) {
                         LOG.warn(String.format(
                                 "Missing value spotted. Expected counter value = %d, actual counter value = %d", expectedCounterValue, actualCounterValue));
@@ -49,10 +52,16 @@ public class App {
                                 "Duplicate value spotted. Expected counter value = %d, actual counter value = %d", expectedCounterValue, actualCounterValue));
                     }
                     keyCounts.put(record.key(), actualCounterValue + 1);
+                    received++;
                 } catch (Exception exc) {
                     LOG.warn("Can't handle message: " + exc.toString());
                 }
             }
+            if (received != 0) {
+                double meanDelay = sum / received;
+                LOG.info("Mean delay: " + meanDelay);
+            }
+
         }
     }
 
