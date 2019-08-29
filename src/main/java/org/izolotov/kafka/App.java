@@ -21,16 +21,16 @@ public class App {
         Clock utcClock = Clock.systemUTC();
         Map<String, Long> keyCounts = new HashMap<>();
         Properties props = new Properties();
-        props.put("bootstrap.servers", "localhost:9092");
-//        props.put("security.protocol", "SSL");
-//        props.put("ssl.truststore.location", "kafka.client.truststore.jks");
-        props.put("group.id", "demo-group");
+        props.put("bootstrap.servers", System.getenv("BOOTSTRAP_SERVERS"));
+        props.put("security.protocol", "SSL");
+        props.put("ssl.truststore.location", "kafka.client.truststore.jks");
+        props.put("group.id", System.getenv("CONSUMER_GROUP"));
         props.put("key.deserializer",
                 "org.apache.kafka.common.serialization.StringDeserializer");
         props.put("value.deserializer",
                 "org.apache.kafka.common.serialization.ByteArrayDeserializer");
         KafkaConsumer<String, byte[]> consumer = new KafkaConsumer<>(props);
-        consumer.subscribe(Arrays.asList("test"));
+        consumer.subscribe(Arrays.asList(System.getenv("TOPIC_NAME")));
         while (true) {
             ConsumerRecords<String, byte[]> records = consumer.poll(1000);
             int sum = 0;

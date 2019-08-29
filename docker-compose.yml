@@ -12,7 +12,7 @@ services:
       driver: awslogs
       options:
         awslogs-create-group: true
-        awslogs-group: /ecs/gatling-runner
+        awslogs-group: /ecs/pot7-kafka-consumer
         # TODO should be parametrized
-        awslogs-region: us-east-2
+        awslogs-region: us-east-1
         awslogs-stream-prefix: kafka-consumer
