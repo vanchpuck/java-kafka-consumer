@@ -32,7 +32,7 @@ public class App {
         KafkaConsumer<String, byte[]> consumer = new KafkaConsumer<>(props);
         consumer.subscribe(Arrays.asList(System.getenv("TOPIC_NAME")));
         while (true) {
-            ConsumerRecords<String, byte[]> records = consumer.poll(System.getenv("POLL_WINDOW_MILLISECONDS"));
+            ConsumerRecords<String, byte[]> records = consumer.poll(Integer.parseInt(System.getenv("POLL_WINDOW_MILLISECONDS")));
             int sum = 0;
             int received = 0;
             for (ConsumerRecord<String, byte[]> record : records) {
