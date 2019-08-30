@@ -1,8 +1,13 @@
 version: '2'
 services:
   gatling-runner:
-    # TODO should be parametrized
-    image: 848625190772.dkr.ecr.us-east-2.amazonaws.com/distr-docke-flxqu317r5k1:latest
+    # TODO insert image here
+    image: 
+    environment:
+      - TOPIC_NAME=
+      - BOOTSTRAP_SERVERS=
+      - CONSUMER_GROUP=test_group
+      - POLL_WINDOW_MILLISECONDS=50
     ulimits:
       nproc: 65535
       nofile:
@@ -14,5 +19,6 @@ services:
         awslogs-create-group: true
         awslogs-group: /ecs/pot7-kafka-consumer
         # TODO should be parametrized
-        awslogs-region: us-east-1
+        #awslogs-region: us-east-1
+        awslogs-region: ap-south-1
         awslogs-stream-prefix: kafka-consumer
