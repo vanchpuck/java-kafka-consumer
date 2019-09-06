@@ -1,8 +1,12 @@
 version: '2'
 services:
   gatling-runner:
-    # TODO should be parametrized
-    image: 848625190772.dkr.ecr.us-east-2.amazonaws.com/distr-docke-flxqu317r5k1:latest
+    image: 311630568628.dkr.ecr.ap-south-1.amazonaws.com/pot7-consumer-runner:latest
+    environment:
+      - TOPIC_NAME=topic1-5K
+      - BOOTSTRAP_SERVERS=b-10.potkafkadstcluster.tt0dxe.c2.kafka.ap-south-1.amazonaws.com:9094,b-12.potkafkadstcluster.tt0dxe.c2.kafka.ap-south-1.amazonaws.com:9094,b-6.potkafkadstcluster.tt0dxe.c2.kafka.ap-south-1.amazonaws.com:9094
+      - CONSUMER_GROUP=test_group
+      - POLL_WINDOW_MILLISECONDS=50
     ulimits:
       nproc: 65535
       nofile:
@@ -13,6 +17,5 @@ services:
       options:
         awslogs-create-group: true
         awslogs-group: /ecs/pot7-kafka-consumer
-        # TODO should be parametrized
-        awslogs-region: us-east-1
+        awslogs-region: ap-south-1
         awslogs-stream-prefix: kafka-consumer

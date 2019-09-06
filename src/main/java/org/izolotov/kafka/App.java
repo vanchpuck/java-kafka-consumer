@@ -32,7 +32,7 @@ public class App {
         KafkaConsumer<String, byte[]> consumer = new KafkaConsumer<>(props);
         consumer.subscribe(Arrays.asList(System.getenv("TOPIC_NAME")));
         while (true) {
-            ConsumerRecords<String, byte[]> records = consumer.poll(1000);
+            ConsumerRecords<String, byte[]> records = consumer.poll(Integer.parseInt(System.getenv("POLL_WINDOW_MILLISECONDS")));
             int sum = 0;
             int received = 0;
             for (ConsumerRecord<String, byte[]> record : records) {
@@ -43,7 +43,6 @@ public class App {
                     Long consumeEpoch = utcClock.millis();
                     Long delay = consumeEpoch - produceEpoch;
                     sum+=delay;
-//                    LOG.info(String.format("New record consumed. Key = %s, counter value = %d, delay = %d", record.key(), actualCounterValue, delay));
                     if (actualCounterValue > expectedCounterValue) {
                         LOG.warn(String.format(
                                 "Missing value spotted. Expected counter value = %d, actual counter value = %d", expectedCounterValue, actualCounterValue));
@@ -59,7 +58,7 @@ public class App {
             }
             if (received != 0) {
                 double meanDelay = sum / received;
-                LOG.info("Mean delay in milliseconds: " + meanDelay);
+                LOG.info(System.getenv("TOPIC_NAME") + " MEAN_DELAY_MILLISECONDS " + meanDelay);
             }
 
         }
